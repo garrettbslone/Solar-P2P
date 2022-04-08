@@ -1,6 +1,6 @@
 import datetime
 from re import I
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import firebase_admin
 from firebase_admin import credentials, firestore
 from os.path import exists
@@ -38,8 +38,8 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 
 @app.route("/")
-def hello_world():
-    return "Hello World!"
+def home():
+    return render_template("home.html")
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -75,7 +75,7 @@ def register():
         if not pswrd:
             return "Please include password parameter", 400
         
-        system = request.args.get("system")
+        system = request.args.get("systemNum")
         if not system:
             system = 1
         
@@ -86,7 +86,7 @@ def register():
         planet = {
             u'planetName' : str(name),
             u'password': str(pswrd),
-            u'system' : [system]
+            u'systemNum' : [system]
         }
         
         planet_ref.add(planet)
@@ -106,7 +106,7 @@ def planetsInSystem():
         
         planet_docs = planet_ref.stream()
         for planet_doc in planet_docs:
-            if int(system) in planet_doc.to_dict()['system']:
+            if int(system) in planet_doc.to_dict()['systemNum']:
                 planetsInSystem.append(dict(id = planet_doc.id, planet = planet_doc.to_dict()))
 
         return jsonify(planetsInSystem), 200
@@ -121,7 +121,7 @@ def sentiment():
         # planet: planet trying to receive a sentiment
         if request.method == "GET":
             name = request.args.get("planetName")
-            system = request.args.get("system")
+            system = request.args.get("systemNum")
             if not name:
                 return "Please include planetName parameter", 400
             elif not system:
@@ -130,7 +130,7 @@ def sentiment():
                 all_sentiments = []
                 sentiment_docs = sentiment_ref.where(u'to', u'==', name).stream()
                 for sentiment_doc in sentiment_docs:
-                    if str(sentiment_doc.to_dict()[u'system']) == system:
+                    if str(sentiment_doc.to_dict()[u'systemNum']) == system:
                         all_sentiments.append(dict(id = sentiment_doc.id, sentiment = sentiment_doc.to_dict()))
                 return jsonify(sorted(all_sentiments, key= lambda x:x["sentiment"]["date"])), 200
 
@@ -140,17 +140,17 @@ def sentiment():
         # to_planet: name of the planet to send the sentiment to
         # sentiment: the sentiment to send
         elif request.method == "POST":
-            fromPlanet = request.args.get("from")
-            toPlanet = request.args.get("to")
+            fromPlanet = request.args.get("fromPlanet")
+            toPlanet = request.args.get("toPlanet")
             sentiment = request.args.get("sentiment")
             sentVal = request.args.get("sentVal") 
-            system = request.args.get("system")
+            system = request.args.get("systemNum")
             
             
             if not fromPlanet:
-                return "Please include sending Planet name parameter", 400
+                return "Please include fromPlanet name parameter", 400
             elif not toPlanet:
-                return "Please include receiving Planet name parameter", 400
+                return "Please include toPlanet name parameter", 400
             elif not sentiment:
                 return "Please include sentiment parameter", 400
             elif not sentVal:
@@ -160,11 +160,11 @@ def sentiment():
             else:
                 print()
                 newSentiment = {
-                    u'from': fromPlanet,
-                    u'to': toPlanet,
+                    u'fromPlanet': fromPlanet,
+                    u'toPlanet': toPlanet,
                     u'message': sentiment,
                     u'sentVal': int(sentVal),
-                    u'system': int(system),
+                    u'systemNum': int(system),
                     u'date': datetime.datetime.now(tz=datetime.timezone.utc),
                 }
                 sentiment_ref.add(newSentiment)

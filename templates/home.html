@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Solar API</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
+        <style>
+            #section {
+                margin-left: 1em;
+            }
+            #endpoints {
+                margin-left: 1em;
+            }
+            h2 {
+                color:darkcyan;
+            }
+            p {
+                margin-left: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1><b>Documentation</b></h1>
+            <div id="section">
+                <h2>PLANET</h2>
+                <div id="endpoints">
+                    <h4><b>POST: /register</b></h4>
+                    <p>
+                        <b>Params:</b> <i>planetName, password, systemNum</i> <br>
+                        Register the planet to the server
+                    </p>
+                    
+                        
+                    <h4><b>POST: /login</b></h4>
+                    <p>
+                        <b>Params:</b> <i>planetName, password</i> <br>
+                        Login the planet to the server
+                    </p>
+
+                    <h4><b>GET: /planetsInSystem</b></h4>
+                    <p>
+                        <b>Params:</b> <i>systemNum</i> <br>
+                        Returns list of planet ids and information in a solar system
+                    </p>
+                </div>
+
+                <h2>Sentiment</h2>
+                <div id="endpoints">
+                    <h4><b>GET: /sentiments</b></h4>
+                    <p>
+                        <b>Params:</b> <i>planetName, systemNum</i> <br>
+                        Get the sentiments that are meant for that user
+                    </p>
+                    
+                    <h4><b>POST: /sentiment</b></h4>
+                    <p>
+                        <b>Params:</b> <i>from, to, sentiment, sentVal, systemNum</i> <br>
+                        Post sentiment to server for other planets to receive.
+                    </p>
+                        
+                    <h4><b>DELETE: /sentiment</b></h4>
+                    <p>
+                        <b>Params:</b> <i>sentimentId</i> <br>
+                        Delete the the sentiment specified
+                    </p>
+
+                </div>
+            </div>
+            
+
+    </body>
+</html>
