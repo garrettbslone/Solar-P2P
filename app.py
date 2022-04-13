@@ -86,7 +86,7 @@ def register():
         planet = {
             u'planetName' : str(name),
             u'password': str(pswrd),
-            u'systemNum' : [system]
+            u'systemNum' : [int(system)]
         }
         
         planet_ref.add(planet)
@@ -107,7 +107,9 @@ def planetsInSystem():
         planet_docs = planet_ref.stream()
         for planet_doc in planet_docs:
             if int(system) in planet_doc.to_dict()['systemNum']:
-                planetsInSystem.append(dict(id = planet_doc.id, planet = planet_doc.to_dict()))
+                planetNoPassword =  planet_doc.to_dict()
+                planetNoPassword.pop("password", None)
+                planetsInSystem.append(dict(id = planet_doc.id, planetInfo = planetNoPassword))
 
         return jsonify(planetsInSystem), 200
     except Exception as e:
@@ -156,7 +158,7 @@ def sentiment():
             elif not sentVal:
                 return "Please include sentiment value parameter", 400
             elif not system:
-                return "Please include system parameter", 400
+                return "Please include systemNum parameter", 400
             else:
                 print()
                 newSentiment = {
