@@ -130,7 +130,7 @@ def sentiment():
                 return "Please include system parameter", 400
             else:
                 all_sentiments = []
-                sentiment_docs = sentiment_ref.where(u'to', u'==', name).stream()
+                sentiment_docs = sentiment_ref.where(u'toPlanet', u'==', name).stream()
                 for sentiment_doc in sentiment_docs:
                     if str(sentiment_doc.to_dict()[u'systemNum']) == system:
                         all_sentiments.append(dict(id = sentiment_doc.id, sentiment = sentiment_doc.to_dict()))
